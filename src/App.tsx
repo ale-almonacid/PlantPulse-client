@@ -1,6 +1,9 @@
 //React
 import { Routes, Route,} from "react-router-dom"
 
+//Components
+import Navbar from "@/components/navigation/Navbar"
+
 //Pages 
 import DashboardPage from "@/pages/DashboardPage"
 import WateringsPage from "@/pages/WateringsPage"
@@ -11,6 +14,9 @@ import NotFoundPage from "@/pages/NotFoundPage"
 
 export function App() {
   return (
+    <>
+     <Navbar />
+
      <Routes>
 
        <Route path="/" element={<DashboardPage />} />
@@ -25,6 +31,7 @@ export function App() {
 
 
     </Routes>
+    </>
   )
 }
 
