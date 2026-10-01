@@ -1,4 +1,4 @@
-import { addDays, differenceInCalendarDays } from "date-fns"
+import { addDays, differenceInCalendarDays, format, isAfter, startOfDay } from "date-fns"
 
 import type { Plant } from "@/types/plant"
 
@@ -19,4 +19,40 @@ export function getWateringLabel(daysUntilWatering: number | null): string {
 
   const daysLate = Math.abs(daysUntilWatering)
   return `Overdue by ${daysLate} ${daysLate === 1 ? "day" : "days"}`
+}
+
+// One watering to do: a plant on a day
+export type WateringTask = {
+  key: string // "plantId-2026-10-01", unique per plant and day
+  plant: Plant
+  date: Date // the day it shows under (overdue waterings show under today)
+  daysLate: number // 0 unless it was due before today
+}
+
+export const toDayKey = (date: Date) => format(date, "yyyy-MM-dd")
+
+// Every watering due from today until `days` days from now (repeats included), sorted by day
+export function getWateringTasks(plants: Plant[], days: number): WateringTask[] {
+  const today = startOfDay(new Date())
+  const lastDay = addDays(today, days - 1)
+  const tasks: WateringTask[] = []
+
+  plants.forEach((plant) => {
+    const lastWaterLog = plant.waterLogs?.[0]
+    let date = lastWaterLog
+      ? startOfDay(addDays(new Date(lastWaterLog.date), plant.frequency))
+      : today // never watered => today
+
+    const daysLate = Math.max(0, differenceInCalendarDays(today, date))
+    if (daysLate > 0) date = today
+
+    let isFirst = true
+    while (!isAfter(date, lastDay)) {
+      tasks.push({ key: `${plant.id}-${toDayKey(date)}`, plant, date, daysLate: isFirst ? daysLate : 0 })
+      date = addDays(date, plant.frequency)
+      isFirst = false
+    }
+  })
+
+  return tasks.sort((a, b) => a.date.getTime() - b.date.getTime() || a.plant.name.localeCompare(b.plant.name))
 }

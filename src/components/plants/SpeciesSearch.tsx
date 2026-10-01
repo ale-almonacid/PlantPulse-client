@@ -34,7 +34,8 @@ function SpeciesSearch({ id, value, onChange, onSpeciesSelected, disabled }: Spe
 
   const [results, setResults] = useState<SpeciesResult[]>([])
   const [searchedQuery, setSearchedQuery] = useState<string | null>(null) // the query the results belong to
-  const [selectedName, setSelectedName] = useState<string | null>(null)
+  // a value that comes already filled (e.g. editing a plant) counts as selected => no search on open
+  const [selectedName, setSelectedName] = useState<string | null>(value.trim() || null)
   const [isSearching, setIsSearching] = useState(false)
   const [isLoadingDetails, setIsLoadingDetails] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)

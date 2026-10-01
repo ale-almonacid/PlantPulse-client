@@ -36,7 +36,7 @@ function PlantsListPage() {
   return (
     <div className="mx-auto w-full max-w-360 px-[8vw] py-8">
       <header className="flex items-center justify-between">
-        <h1 className="heading-h">My plants</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">My plants</h1>
         <CreatePlantDialog onPlantCreated={getPlants} />
       </header>
 

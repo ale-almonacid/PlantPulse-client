@@ -13,6 +13,8 @@ import service from "@/services/index.services"
 import type { Plant } from "@/types/plant"
 
 // Components
+import DeletePlantDialog from "@/components/plants/DeletePlantDialog"
+import EditPlantDialog from "@/components/plants/EditPlantDialog"
 import LogWaterButton from "@/components/plants/LogWaterButton"
 import SpeciesInfo from "@/components/plants/SpeciesInfo"
 import WateringBadge from "@/components/plants/WateringBadge"
@@ -71,22 +73,31 @@ function PlantDetailsPage() {
   return (
     <div className="mx-auto flex w-full max-w-360 flex-col gap-8 px-[8vw] py-8">
 
-      <Button variant="ghost" className="self-start" asChild>
-        <Link to="/plants"><ArrowLeft /> My plants</Link>
-      </Button>
-
       {/* Cover */}
-      {plant.imageUrl ? (
-        <img
-          src={plant.imageUrl}
-          alt={plant.name}
-          className="aspect-video max-h-[28rem] w-full rounded-xl object-cover sm:aspect-[21/9]"
-        />
-      ) : (
-        <div className="flex aspect-video max-h-[28rem] w-full items-center justify-center rounded-xl bg-muted sm:aspect-[21/9]">
-          <Leaf className="size-16 text-muted-foreground" />
+      <div className="relative">
+        {plant.imageUrl ? (
+          <img
+            src={plant.imageUrl}
+            alt={plant.name}
+            className="aspect-video max-h-[28rem] w-full rounded-xl object-cover sm:aspect-[21/9]"
+          />
+        ) : (
+          <div className="flex aspect-video max-h-[28rem] w-full items-center justify-center rounded-xl bg-muted sm:aspect-[21/9]">
+            <Leaf className="size-16 text-muted-foreground" />
+          </div>
+        )}
+
+        {/* Go back + edit/delete, on top of the cover */}
+        <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
+          <Button variant="secondary" asChild>
+            <Link to="/plants"><ArrowLeft /> My plants</Link>
+          </Button>
+          <div className="flex items-center gap-2">
+            <EditPlantDialog plant={plant} onPlantUpdated={getPlant} />
+            <DeletePlantDialog plantId={plant.id} plantName={plant.name} />
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

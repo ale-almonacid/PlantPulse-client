@@ -5,7 +5,7 @@ function DashboardPage() {
       <header className="flex flex-row gap-40">
 
         <div className="flex flex-col gap-2">
-        <h1 className="heading-h">Welcome back</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Welcome back</h1>
         <p className="text-muted-foreground">All health records are encrypted in your browser before they are saved. Only you and authorized delegates can view them.</p>
         </div>
        

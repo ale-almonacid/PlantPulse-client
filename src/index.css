@@ -128,3 +128,115 @@
     @apply font-sans;
     }
 }
+/* ══ Checklist (src/components/checklist/Checklist.tsx) ═══
+   Adapted from Bencho (MIT — bencho.dev/licence).
+
+   Bencho's tokens mapped onto this project's shadcn ones:
+     --ink / --fill-on      → --foreground  (the fill and the ring)
+     --fill-slab / --card   → --card        (the tick, the card's own ground)
+     --font-ui              → inherited, the app already sets Inter
+     --ink-rgb / --fill-on-rgb
+       Bencho builds rgba() from three bare numbers, but shadcn's
+       colours are oklch, so those rgba() calls are color-mix()
+       instead — same alpha, and it follows dark mode for free.
+     --pane-edge            → not needed: the shadcn Card draws its own ring */
+
+.chk-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chk-row:disabled { cursor: progress; }
+
+.chk-row:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+/* ── the box ────────────────────────────────────────────────
+   The ring never changes. It is drawn once, at rest, and the
+   fill opens inside it — so what you see is a box being
+   filled in rather than one colour being swapped for another.
+   `overflow: hidden` is what keeps the fill's overshoot
+   inside the ring instead of past it. */
+.chk-box {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1.5px color-mix(in oklch, var(--foreground) 28%, transparent);
+}
+
+.chk-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--foreground);
+  /* from the middle out — an origin at a corner would read as
+     a panel sliding in rather than as the box filling */
+  transform-origin: center;
+}
+
+/* ── the tick ───────────────────────────────────────────────
+   Drawn rather than faded: `stroke-dashoffset` walks the
+   stroke on from its start, so the mark is made the way a
+   person makes it. It sits ON the fill and takes the card's
+   own ground colour, which is why it can be full strength and
+   still be invisible until there is something under it. */
+.chk-tick {
+  position: relative;
+  width: 68%;
+  height: 68%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--card);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chk-say {
+  position: relative;
+  /* sized to the WORDS, not to the row: the rule is a scale of
+     this box, so a full-width span would strike out the empty
+     half of the line as well */
+  display: inline-block;
+  max-width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.chk-word {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.chk-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* on the type's own middle rather than the box's — a rule
+     centred on a line box sits low, because the box carries
+     the descender space and the letters do not */
+  top: 46%;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transform-origin: left center;
+  pointer-events: none;
+}
