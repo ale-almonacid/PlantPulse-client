@@ -31,9 +31,6 @@ export function App() {
 
 
     </Routes>
-
-     {/* space so the mobile bottom navbar doesn't cover the end of the page */}
-     <div className="h-28 sm:hidden" />
     </>
   )
 }

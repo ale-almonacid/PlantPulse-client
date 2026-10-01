@@ -12,7 +12,7 @@ import {
 
 type AllWateredEmptyProps = {
   isListVisible: boolean
-  onToggleList?: () => void // no button when there's no list to show
+  onToggleList: () => void
 }
 
 // Based on shadcn's "Empty Outline", light blue and without the dashed border
@@ -28,13 +28,11 @@ function AllWateredEmpty({ isListVisible, onToggleList }: AllWateredEmptyProps) 
           All your plants are watered.
         </EmptyDescription>
       </EmptyHeader>
-      {onToggleList && (
-        <EmptyContent>
-          <Button variant="outline" size="sm" onClick={onToggleList}>
-            {isListVisible ? "Hide list" : "Show list"}
-          </Button>
-        </EmptyContent>
-      )}
+      <EmptyContent>
+        <Button variant="outline" size="sm" onClick={onToggleList}>
+          {isListVisible ? "Hide list" : "Show list"}
+        </Button>
+      </EmptyContent>
     </Empty>
   )
 }

@@ -161,7 +161,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.chk-row:disabled { cursor: progress; }
+.chk-row:disabled { cursor: default; }
 
 .chk-row:focus-visible {
   outline: none;
