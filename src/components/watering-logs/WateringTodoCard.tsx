@@ -31,18 +31,18 @@ function WateringTodoCard({ task, checked, onToggle, disabled }: WateringTodoCar
         className="gap-4 rounded-xl p-3"
         label={plant.name}
         media={<PlantThumbnail imageUrl={plant.imageUrl} name={plant.name} />}
-        description={<span className="truncate text-sm text-muted-foreground">{plant.species}</span>}
-        aside={
-          <span className="flex shrink-0 flex-col items-end gap-1 text-sm">
-            <span className="flex items-center gap-1 text-muted-foreground">
-              <Droplets className="size-3.5" /> {plant.wateringAmount}
-            </span>
-            {daysLate > 0 && !checked && (
-              <span className="text-xs font-medium text-destructive">
-                {daysLate} {daysLate === 1 ? "day" : "days"} late
-              </span>
-            )}
+        description={
+          <span className="flex max-w-full items-center gap-1 text-sm text-muted-foreground">
+            <Droplets className="size-3.5 shrink-0" />
+            <span className="truncate">{plant.wateringAmount}</span>
           </span>
+        }
+        aside={
+          daysLate > 0 && !checked && (
+            <span className="shrink-0 text-xs font-medium text-destructive">
+              {daysLate} {daysLate === 1 ? "day" : "days"} late
+            </span>
+          )
         }
       />
     </Card>
