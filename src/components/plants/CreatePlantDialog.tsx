@@ -25,7 +25,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 // Components
-import SpeciesSearch, { type SpeciesDetails } from "@/components/plants/SpeciesSearch"
+import SpeciesSearch from "@/components/plants/SpeciesSearch"
+
+// Types
+import type { SpeciesDetails } from "@/types/species"
 
 type CreatePlantDialogProps = {
   onPlantCreated?: () => void // e.g. re-fetch the plants list

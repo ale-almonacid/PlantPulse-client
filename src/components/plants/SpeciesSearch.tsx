@@ -2,30 +2,19 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 // Shadcn Icons
-import { Leaf, Loader2, Search } from "lucide-react"
+import { Loader2, Search } from "lucide-react"
 
 // Services
 import service from "@/services/index.services"
 
+// Types
+import type { SpeciesDetails, SpeciesResult } from "@/types/species"
+
+// Components
+import SpeciesItem from "@/components/plants/SpeciesItem"
+
 // Shadcn UI Imports
 import { Input } from "@/components/ui/input"
-
-// What GET /api/species/search returns
-type SpeciesResult = {
-  id: number
-  commonName: string
-  scientificName: string | null
-  image: string | null
-}
-
-// What GET /api/species/:id returns
-export type SpeciesDetails = {
-  id: number
-  species: string
-  scientificName: string | null
-  watering: string | null
-  frequency: number | null
-}
 
 type SpeciesSearchProps = {
   id?: string
@@ -136,21 +125,9 @@ function SpeciesSearch({ id, value, onChange, onSpeciesSelected, disabled }: Spe
               <button
                 type="button"
                 onClick={() => handleSelect(result)}
-                className="flex w-full items-center gap-3 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+                className="flex w-full items-center rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
               >
-                {result.image ? (
-                  <img src={result.image} alt="" className="size-8 shrink-0 rounded-sm object-cover" />
-                ) : (
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-muted">
-                    <Leaf className="size-4 text-muted-foreground" />
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{result.commonName}</p>
-                  {result.scientificName && (
-                    <p className="truncate text-xs text-muted-foreground italic">{result.scientificName}</p>
-                  )}
-                </div>
+                <SpeciesItem species={result} />
               </button>
             </li>
           ))}
