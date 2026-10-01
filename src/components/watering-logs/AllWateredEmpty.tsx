@@ -18,9 +18,9 @@ type AllWateredEmptyProps = {
 // Based on shadcn's "Empty Outline", light blue and without the dashed border
 function AllWateredEmpty({ isListVisible, onToggleList }: AllWateredEmptyProps) {
   return (
-    <Empty className="bg-sky-500/8 py-7 ">
+    <Empty className="bg-water/40 py-7">
       <EmptyHeader>
-        <EmptyMedia variant="icon" className="bg-sky-500/15 text-sky-500">
+        <EmptyMedia variant="icon" className="bg-water text-water-foreground">
           <Droplets />
         </EmptyMedia>
         <EmptyTitle >You're all done for today</EmptyTitle>

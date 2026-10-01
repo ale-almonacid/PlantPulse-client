@@ -45,7 +45,7 @@ function LogWaterButton({ plantId, onWatered, className }: LogWaterButtonProps) 
 
   return (
     <div className={`flex flex-col gap-2 ${className ?? ""}`}>
-      <Button className="w-full" onClick={handleLogWater} disabled={isSaving || isWatered}>
+      <Button className="w-full bg-water text-water-foreground hover:bg-water/80" onClick={handleLogWater} disabled={isSaving || isWatered}>
         {isSaving ? (
           <><Loader2 className="animate-spin" /> Logging...</>
         ) : isWatered ? (

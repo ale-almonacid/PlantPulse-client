@@ -5,6 +5,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* PlantPulse's watering blue: bg-water, text-water-foreground... */
+@theme {
+    --color-water: #D9E7ED;
+    --color-water-foreground: #20535E;
+}
+
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: 'Inter Variable', sans-serif;

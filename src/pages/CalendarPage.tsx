@@ -60,7 +60,7 @@ function CalendarPage() {
   )
 
   return (
-    <div className="mx-auto flex w-full max-w-360 flex-col gap-6 px-[8vw] py-8 [--fc-monarch-event-contrast:var(--color-sky-800)] [--fc-monarch-event:var(--color-sky-100)] [--fc-monarch-tertiary-foreground:var(--fc-monarch-primary-foreground)] [--fc-monarch-tertiary:var(--fc-monarch-primary)]">
+    <div className="mx-auto flex w-full max-w-360 flex-col gap-6 px-[8vw] py-8 [--fc-monarch-event-contrast:var(--color-water-foreground)] [--fc-monarch-event:var(--color-water)] [--fc-monarch-tertiary-foreground:white] [--fc-monarch-tertiary:var(--color-water-foreground)]">
       <h1 className="text-3xl font-semibold tracking-tight">Calendar</h1>
 
       {errorMessage && <p className="text-destructive">{errorMessage}</p>}

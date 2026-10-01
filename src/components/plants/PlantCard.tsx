@@ -33,10 +33,10 @@ function PlantCard({ plant, onWatered }: PlantCardProps) {
           <img
             src={plant.imageUrl}
             alt={plant.name}
-            className="aspect-video w-full object-cover"
+            className="aspect-square w-full object-cover"
           />
         ) : (
-          <div className="flex aspect-video w-full items-center justify-center bg-muted">
+          <div className="flex aspect-square w-full items-center justify-center bg-muted">
             <Leaf className="size-10 text-muted-foreground" />
           </div>
         )}
