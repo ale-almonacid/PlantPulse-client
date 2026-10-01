@@ -57,9 +57,15 @@ function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWater
   )
 
   // plants watered on an earlier day that don't need water today => shown ticked, like the ones watered today
-  const [notDue] = useState(() => {
+  // plant id: the id of that earlier water log (their last one)
+  const [earlierLogIds, setEarlierLogIds] = useState(() => {
     const dueIds = new Set(dueTasks.map((task) => task.plant.id))
-    return new Set(plants.filter((plant) => !dueIds.has(plant.id) && !wateredToday.has(plant.id)).map((plant) => plant.id))
+    const ids = new Map<string, string>()
+    plants.forEach((plant) => {
+      const lastWaterLog = plant.waterLogs?.[0]
+      if (lastWaterLog && !dueIds.has(plant.id) && !wateredToday.has(plant.id)) ids.set(plant.id, lastWaterLog.id)
+    })
+    return ids
   })
 
   // Today: every plant. The ones to water first (unticked), then the ones that are already fine (ticked)
@@ -76,6 +82,7 @@ function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWater
   const [checked, setChecked] = useState<Map<string, string>>(() => {
     const map = new Map<string, string>()
     wateredToday.forEach((waterLog, plantId) => map.set(`${plantId}-${toDayKey(new Date())}`, waterLog.id))
+    earlierLogIds.forEach((waterLogId, plantId) => map.set(`${plantId}-${toDayKey(new Date())}`, waterLogId))
     return map
   })
   // once everything is watered the list is hidden by default ("Show list" brings it back)
@@ -98,11 +105,34 @@ function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWater
     setErrorMessage(null)
 
     if (waterLogId) {
-      // uncheck => delete the water log
+      // "Water now" on a plant that wasn't due, then untick => only today's watering is undone,
+      // the plant is still fine because of its earlier watering, so it stays ticked
+      const earlierLogId = earlierLogIds.get(task.plant.id)
+      if (earlierLogId && waterLogId !== earlierLogId) {
+        try {
+          await service.delete(`/water-logs/${waterLogId}`)
+          updateChecked(task.key, earlierLogId)
+          onWaterLogsChanged?.()
+        } catch (error) {
+          setErrorMessage(getErrorMessage(error, "Could not undo the watering."))
+        }
+        return
+      }
+
+      // uncheck => delete the water log (the plant's last watering)
       updateChecked(task.key, null) // un-ticks right away, the animation doesn't wait for the server
       try {
         await service.delete(`/water-logs/${waterLogId}`)
         onWaterLogsChanged?.()
+
+        // the earlier watering is gone => nothing to go back to later
+        if (earlierLogId) {
+          setEarlierLogIds((ids) => {
+            const next = new Map(ids)
+            next.delete(task.plant.id)
+            return next
+          })
+        }
       } catch (error) {
         updateChecked(task.key, waterLogId)
         setErrorMessage(getErrorMessage(error, "Could not undo the watering."))
@@ -122,10 +152,10 @@ function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWater
     }
   }
 
-  // watered today (a real water log from today, not just "not due")
+  // watered today (its tick comes from a water log from today, not from an earlier one)
   const isWateredToday = (plant: Plant) => {
     const waterLogId = checked.get(todayKeyOf(plant))
-    return Boolean(waterLogId) && waterLogId !== "saving"
+    return Boolean(waterLogId) && waterLogId !== "saving" && waterLogId !== earlierLogIds.get(plant.id)
   }
 
   // Next waterings: the next watering of every plant, soonest first.
@@ -135,15 +165,15 @@ function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWater
     return plants
       .flatMap((plant) => {
         const waterLogId = checked.get(todayKeyOf(plant))
-        if (waterLogId && waterLogId !== "saving") {
-          return [{ plant, daysUntil: plant.frequency, date: addDays(today, plant.frequency) }]
+        if (!waterLogId || waterLogId === "saving") return [] // still to water today
+        if (waterLogId === earlierLogIds.get(plant.id)) {
+          const daysUntil = getDaysUntilWatering(plant) ?? 0
+          return [{ plant, daysUntil, date: addDays(today, daysUntil) }]
         }
-        if (!notDue.has(plant.id)) return [] // still to water today
-        const daysUntil = getDaysUntilWatering(plant) ?? 0
-        return [{ plant, daysUntil, date: addDays(today, daysUntil) }]
+        return [{ plant, daysUntil: plant.frequency, date: addDays(today, plant.frequency) }]
       })
       .sort((a, b) => a.daysUntil - b.daysUntil || a.plant.name.localeCompare(b.plant.name))
-  }, [plants, notDue, checked])
+  }, [plants, earlierLogIds, checked])
 
   // "Water now" => logs it, so its tick in Today becomes one you can undo
   const handleWaterNow = async (item: UpcomingWatering) => {
@@ -161,7 +191,10 @@ function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWater
     }
   }
 
-  const isAllWatered = todayTasks.every((task) => notDue.has(task.plant.id) || isWateredToday(task.plant))
+  const isAllWatered = todayTasks.every((task) => {
+    const waterLogId = checked.get(task.key)
+    return Boolean(waterLogId) && waterLogId !== "saving"
+  })
 
   if (plants.length === 0) {
     return <p className="text-muted-foreground">No plants yet. Add one in My plants.</p>
@@ -186,10 +219,8 @@ function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWater
               <WateringTodoCard
                 key={task.key}
                 task={task}
-                checked={checked.has(task.key) || notDue.has(task.plant.id)}
+                checked={checked.has(task.key)}
                 onToggle={() => handleToggle(task)}
-                // watered on an earlier day: there's no watering from today to undo
-                disabled={notDue.has(task.plant.id) && !checked.has(task.key)}
               />
             ))}
         </section>
