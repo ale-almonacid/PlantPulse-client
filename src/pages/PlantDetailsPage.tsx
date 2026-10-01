@@ -13,7 +13,6 @@ import service from "@/services/index.services"
 import type { Plant } from "@/types/plant"
 
 // Components
-import DeletePlantDialog from "@/components/plants/DeletePlantDialog"
 import EditPlantDialog from "@/components/plants/EditPlantDialog"
 import LogWaterButton from "@/components/plants/LogWaterButton"
 import SpeciesInfo from "@/components/plants/SpeciesInfo"
@@ -79,7 +78,7 @@ function PlantDetailsPage() {
           <img
             src={plant.imageUrl}
             alt={plant.name}
-            className="aspect-video max-h-[28rem] w-full rounded-xl object-cover sm:aspect-[21/9]"
+            className="aspect-video max-h-[32rem] w-full rounded-xl object-cover sm:aspect-[1/1]"
           />
         ) : (
           <div className="flex aspect-video max-h-[28rem] w-full items-center justify-center rounded-xl bg-muted sm:aspect-[21/9]">
@@ -87,15 +86,12 @@ function PlantDetailsPage() {
           </div>
         )}
 
-        {/* Go back + edit/delete, on top of the cover */}
+        {/* Go back + edit, on top of the cover */}
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
           <Button variant="secondary" asChild>
             <Link to="/plants"><ArrowLeft /> My plants</Link>
           </Button>
-          <div className="flex items-center gap-2">
-            <EditPlantDialog plant={plant} onPlantUpdated={getPlant} />
-            <DeletePlantDialog plantId={plant.id} plantName={plant.name} />
-          </div>
+          <EditPlantDialog plant={plant} onPlantUpdated={getPlant} />
         </div>
       </div>
 

@@ -36,7 +36,7 @@ const todayKeyOf = (plant: Plant) => `${plant.id}-${toDayKey(new Date())}`
 const sortTasks = (tasks: WateringTask[]) =>
   [...tasks].sort((a, b) => b.daysLate - a.daysLate || a.plant.name.localeCompare(b.plant.name))
 
-// ℹ️ The lists are worked out ONCE from the data they get on mount, so a checked task
+//  The lists are worked out ONCE from the data they get on mount, so a checked task
 // stays checked in its place instead of the list re-ordering after each click
 function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWaterings = true }: WateringTodoListProps) {
 
@@ -177,7 +177,7 @@ function WateringTodoList({ plants, waterLogs, onWaterLogsChanged, showNextWater
       <div className={showNextWaterings ? "flex max-h-[70vh] flex-col gap-6 overflow-y-auto p-1 pr-3" : "flex flex-col gap-6"}>
         <section className="flex flex-col gap-3">
           <Separator />
-          <h3 className="text-lg font-semibold tracking-tight">Today</h3>
+          <h3 className="text-lg font-semibold tracking-tight">Today's pending waterings</h3>
           {isAllWatered && (
             <AllWateredEmpty
               isListVisible={isListVisible}
