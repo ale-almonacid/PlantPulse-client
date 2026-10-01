@@ -11,6 +11,14 @@ export function getDaysUntilWatering(plant: Plant): number | null {
   return differenceInCalendarDays(nextWatering, new Date())
 }
 
+// Plants ordered by their next watering: overdue first, then today (or never watered), then the future
+export function sortByNextWatering(plants: Plant[]): Plant[] {
+  return [...plants].sort(
+    (a, b) =>
+      (getDaysUntilWatering(a) ?? 0) - (getDaysUntilWatering(b) ?? 0) || a.name.localeCompare(b.name)
+  )
+}
+
 // "Water in 3 days", "Water tomorrow", "Water today", "Overdue by 2 days"
 export function getWateringLabel(daysUntilWatering: number | null): string {
   if (daysUntilWatering === null || daysUntilWatering === 0) return "Water today"

@@ -11,7 +11,12 @@ import WateringCard from "@/components/watering-logs/WateringCard"
 import { fromDayKey } from "@/lib/dates"
 
 // Logged waterings grouped by day, newest day first
-function WateringHistoryList({ waterLogs }: { waterLogs: WaterLog[] }) {
+type WateringHistoryListProps = {
+  waterLogs: WaterLog[]
+  onWaterLogsChanged?: () => void // after editing or deleting one, e.g. re-fetch them
+}
+
+function WateringHistoryList({ waterLogs, onWaterLogsChanged }: WateringHistoryListProps) {
 
   const waterLogsByDay = useMemo(() => {
     const days = new Map<string, WaterLog[]>()
@@ -32,7 +37,7 @@ function WateringHistoryList({ waterLogs }: { waterLogs: WaterLog[] }) {
         <section key={day} className="flex flex-col gap-3">
           <DateSeparator date={fromDayKey(day)} />
           {dayWaterLogs.map((waterLog) => (
-            <WateringCard key={waterLog.id} waterLog={waterLog} />
+            <WateringCard key={waterLog.id} waterLog={waterLog} onWateringChanged={onWaterLogsChanged} />
           ))}
         </section>
       ))}

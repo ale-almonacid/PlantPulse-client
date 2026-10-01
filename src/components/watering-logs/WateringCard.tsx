@@ -9,16 +9,19 @@ import type { WaterLog } from "@/types/plant"
 
 // Components
 import PlantThumbnail from "@/components/plants/PlantThumbnail"
+import DeleteWateringDialog from "@/components/watering-logs/DeleteWateringDialog"
+import EditWateringDialog from "@/components/watering-logs/EditWateringDialog"
 
 // Shadcn UI Imports
 import { Card } from "@/components/ui/card"
 
 type WateringCardProps = {
   waterLog: WaterLog
+  onWateringChanged?: () => void // after editing or deleting it, e.g. re-fetch the history
 }
 
 // Horizontal card (list item): plant photo on the left, plant + watering info on the right
-function WateringCard({ waterLog }: WateringCardProps) {
+function WateringCard({ waterLog, onWateringChanged }: WateringCardProps) {
   const plant = waterLog.plant
 
   return (
@@ -44,6 +47,11 @@ function WateringCard({ waterLog }: WateringCardProps) {
             <Droplets className="size-3.5" /> {plant.wateringAmount}
           </span>
         )}
+      </div>
+
+      <div className="flex shrink-0 items-center">
+        <EditWateringDialog waterLog={waterLog} onWateringUpdated={onWateringChanged} />
+        <DeleteWateringDialog waterLog={waterLog} onWateringDeleted={onWateringChanged} />
       </div>
     </Card>
   )

@@ -25,6 +25,11 @@ function WateringsPage() {
     setWaterLogs(response.data)
   }, [])
 
+  // after a check, edit or delete (an error just leaves the list as it was)
+  const refreshWaterLogs = () => {
+    getWaterLogs().catch(() => {})
+  }
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -59,11 +64,11 @@ function WateringsPage() {
 
           {/* forceMount + hidden: keeps the to-do list mounted, so its ticks survive switching tabs */}
           <TabsContent value="todo" forceMount className="data-[state=inactive]:hidden">
-            <WateringTodoList plants={plants} waterLogs={waterLogs} onWaterLogsChanged={() => getWaterLogs().catch(() => {})} />
+            <WateringTodoList plants={plants} waterLogs={waterLogs} onWaterLogsChanged={refreshWaterLogs} />
           </TabsContent>
 
           <TabsContent value="history">
-            <WateringHistoryList waterLogs={waterLogs} />
+            <WateringHistoryList waterLogs={waterLogs} onWaterLogsChanged={refreshWaterLogs} />
           </TabsContent>
         </Tabs>
       )}

@@ -5,6 +5,7 @@ import service from "@/services/index.services"
 
 // Types
 import type { Plant } from "@/types/plant"
+import { sortByNextWatering } from "@/lib/watering"
 
 // Components
 import CreatePlantDialog from "@/components/plants/CreatePlantDialog"
@@ -49,7 +50,8 @@ function PlantsListPage() {
       )}
 
       <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {plants.map((plant) => (
+        {/* the ones that need water first */}
+        {sortByNextWatering(plants).map((plant) => (
           <PlantCard key={plant.id} plant={plant} onWatered={getPlants} />
         ))}
       </div>
